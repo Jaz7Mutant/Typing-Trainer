@@ -40,6 +40,7 @@ def ask_for_continue():
 
 
 def show_score(statistics):
+    # TODO OR NOT TODO: Mistakes percents
     print('Mistakes: ', statistics[0])
     print('Symbols per minute:', round(statistics[1]))
 
