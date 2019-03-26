@@ -5,8 +5,10 @@ from typetrainer import game
 
 
 def get_user_name(change_name: bool):
+    if not os.path.exists(r'typetrainer\user_data.txt'):
+        open(r'typetrainer\user_data.txt', 'w').close()
     os.system('cls')
-    with open('typetrainer\\user_data.txt', 'r+', encoding='utf-8') as data:
+    with open(r'typetrainer\user_data.txt', 'r+', encoding='utf-8') as data:
         user = data.read().split('\n')
         if not change_name and os.getlogin() == user[0] and user[1]:
             return user[1]
@@ -14,15 +16,19 @@ def get_user_name(change_name: bool):
         data.truncate(0)
         data.write(os.getlogin() + '\n')
         print('Please, input your name')
-        data.write(input())
+        name = input()
+        data.write(name)
+        return name
 
 
 def main_menu():
     while True:
-        user = get_user_name(False)
-        os.system('cls')
+        user_name = ''
+        if user_name == '':
+            user_name = get_user_name(False)
+        # os.system('cls')
         print('\tTypeTrainer ' + settings.VERSION)
-        print('\tWelcome, ' + user + '!')
+        print('\tWelcome, ' + user_name + '!')
         print('Menu:')
         print('\t1. Start game')
         print('\t2. Change name')
