@@ -4,17 +4,22 @@ from msvcrt import getch
 import os
 from . import texts_generator
 from . import settings
-import random
-
-ERROR_MISSING_FILE = 1
 
 
-def start_game():
-    texts = texts_generator.open_local_file(settings.DICTIONARY_NAME)
-    random.shuffle(texts)
-    if not texts:
-        print('Dictionary not found')
-        exit(ERROR_MISSING_FILE)
+def start_game(game_type: str):
+    texts = []
+    if game_type == 'random_texts':
+        texts = texts_generator.get_random_texts(settings.TEXTS_DICTIONARY)
+    if game_type == 'random_words':
+        texts = texts_generator.get_random_words(settings.TEXTS_DICTIONARY)
+    if game_type == 'python':
+        print('Coming soon...')
+        return
+        # TODO
+    if game_type == 'crazy':
+        print('Coming soon...')
+        return
+        # TODO
 
     for text in texts:
         statistics = run_round(text)
