@@ -2,6 +2,7 @@ import os
 from typetrainer import settings
 from msvcrt import getch
 from typetrainer import game
+from typetrainer import server
 
 
 def get_user_name(change_name: bool):
@@ -57,7 +58,7 @@ def main_menu():
 def game_types_menu():
     os.system('cls')
     print('Choose game type:')
-    print('\t1. Single palyer')
+    print('\t1. Single player')
     print('\t2. Multi player')
     print('\t3. Return to main menu')
     while True:
@@ -67,7 +68,7 @@ def game_types_menu():
             single_player_modes()
             break
         if key_pressed == b'2':
-            # TODO: Добавить мультиплеер
+            multi_players_menu()
             break
         if key_pressed == b'3':
             return
@@ -75,17 +76,48 @@ def game_types_menu():
 
 def single_player_modes():
     os.system('cls')
+    print('\tSingle player\n')
     print('Choose game mode:')
-    print('\t1. Random textes')
-    print('\t2. Return to main menu')
+    print('\t1. Random texts')
+    print('\t2. Random words')
+    print('\t3. Python code')
+    print('\t4. Crazy')
+    print('\t5. Return to main menu')
+
     while True:
         key_pressed = getch()
 
         if key_pressed == b'1':
-            game.start_game()
-            # TODO Исправить, передавать тип
+            game.start_game('random_texts')
             break
         if key_pressed == b'2':
+            game.start_game('random_words')
+            break
+        if key_pressed == b'3':
+            game.start_game('python')
+            break
+        if key_pressed == b'4':
+            game.start_game('crazy')
+            break
+        if key_pressed == b'5':
+            return
+
+
+def multi_players_menu():
+    os.system('cls')
+    print('\tMulti player\n')
+    print('\t1. Create lobby')
+    print('\t2. Connect to lobby')
+    print('\t3. Return to main menu')
+    while True:
+        key_pressed = getch()
+
+        if key_pressed == b'1':
+            server.lobby_main_menu()
+            break
+        if key_pressed == b'2':
+            server.connect_to_lobby()
+        if key_pressed == b'3':
             return
 
 
