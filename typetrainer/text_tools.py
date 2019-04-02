@@ -13,7 +13,7 @@ class StringBuilder(list):
 
     def to_string(self):
         return ''.join(self.word)
-    # TODO Заменить на __str__
+    # TODO Заменить на __str__, добавить __len__, __add__
 
 
 def highlight_word(word: str):
