@@ -3,6 +3,7 @@ class StringBuilder(list):
     def __init__(self):
         super().__init__()
         self.word = []
+    # TODO сделать _word
 
     def add(self, word: str):
         self.word.append(word)
@@ -12,6 +13,7 @@ class StringBuilder(list):
 
     def to_string(self):
         return ''.join(self.word)
+    # TODO Заменить на __str__
 
 
 def highlight_word(word: str):
