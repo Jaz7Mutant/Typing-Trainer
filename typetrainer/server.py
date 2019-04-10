@@ -26,15 +26,10 @@ def lobby(leader: bool):
     if leader:
         print('2. Change game mode')
         print('3. Start game')
-    print('\n4. Leave room')
+    else:
+        print('4. Ready')
+    print('\n5. Leave room')
     while True:
-        if GAME_START:
-            score = game.start_game(GAME_MODE, True)
-            SocketClient.room_score(score)
-            time.sleep(1)
-            os.system('pause')
-            return
-
         key_pressed = getch()
 
         if key_pressed == b'1':
@@ -45,6 +40,21 @@ def lobby(leader: bool):
             continue
         if leader and key_pressed == b'3':
             SocketClient.room_start(SocketClient.current_room)
+            waiting_for_start()
+            break
+        if not leader and key_pressed == b'4':
+            waiting_for_start()
+            break
+        if key_pressed == b'5':
+            SocketClient.sio.disconnect()
+            return
+
+
+def waiting_for_start():
+    os.system('cls')
+    print('Waiting for other players...')
+    while True:
+        if GAME_START:
             os.system('cls')
             print('Ready')
             time.sleep(1)
@@ -52,9 +62,10 @@ def lobby(leader: bool):
             time.sleep(1)
             print('Go!')
             time.sleep(1)
-            continue
-        if key_pressed == b'4':
-            SocketClient.sio.disconnect()
+            score = game.start_game(GAME_MODE, True)
+            SocketClient.room_score(score)
+            time.sleep(1)
+            os.system('pause')
             return
 
 

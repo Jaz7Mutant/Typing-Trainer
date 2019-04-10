@@ -1,5 +1,4 @@
 import socketio
-from typetrainer import game
 from typetrainer import server
 import os
 

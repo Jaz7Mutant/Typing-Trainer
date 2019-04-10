@@ -1,4 +1,4 @@
-VERSION = '0.3 beta'
+VERSION = '0.5 beta'
 INACTIVE_KEYS = [b'\r']
 INPUT_ENCODING = 'cp866'
 FILE_ENCODING = 'utf-8'
