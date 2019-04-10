@@ -3,6 +3,7 @@ from typetrainer import settings
 from msvcrt import getch
 from typetrainer import game
 from typetrainer import server
+from typetrainer import SocketClient
 
 
 def get_user_name(change_name: bool):
@@ -88,16 +89,16 @@ def single_player_modes():
         key_pressed = getch()
 
         if key_pressed == b'1':
-            game.start_game('random_texts')
+            game.start_game('random_texts', False)
             break
         if key_pressed == b'2':
-            game.start_game('random_words')
+            game.start_game('random_words', False)
             break
         if key_pressed == b'3':
-            game.start_game('python')
+            game.start_game('python', False)
             break
         if key_pressed == b'4':
-            game.start_game('crazy')
+            game.start_game('crazy', False)
             break
         if key_pressed == b'5':
             return
@@ -106,17 +107,18 @@ def single_player_modes():
 def multi_players_menu():
     os.system('cls')
     print('\tMulti player\n')
-    print('\t1. Create lobby')
-    print('\t2. Connect to lobby')
+    print('\t1. Create room')
+    print('\t2. Connect to room')
     print('\t3. Return to main menu')
     while True:
         key_pressed = getch()
 
         if key_pressed == b'1':
-            server.lobby_main_menu()
+            server.create_room()
             break
         if key_pressed == b'2':
-            server.connect_to_lobby()
+            server.browse_rooms()
+            break
         if key_pressed == b'3':
             return
 
@@ -133,4 +135,6 @@ def show_about():
 
 def exit_game():
     print('Bye!')
+    SocketClient.sio.disconnect()
     exit(0)
+

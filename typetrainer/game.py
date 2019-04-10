@@ -1,12 +1,13 @@
-from . import text_tools
+from typetrainer import text_tools
 import time
 from msvcrt import getch
 import os
-from . import texts_generator
-from . import settings
+from typetrainer import texts_generator
+from typetrainer import settings
+from typetrainer import SocketClient
 
 
-def start_game(game_type: str):
+def start_game(game_type: str, online: bool):
     texts = []
     if game_type == 'random_texts':
         texts = texts_generator.get_random_texts(settings.TEXTS_DICTIONARY)
@@ -26,6 +27,8 @@ def start_game(game_type: str):
         os.system('cls')
         if not statistics:
             return
+        if online:
+            return return_score(statistics)
         show_score(statistics)
         if not ask_for_continue():
             return
@@ -42,6 +45,11 @@ def ask_for_continue():
             return False
         if key_pressed in settings.ANSWER_YES:
             return True
+
+
+def return_score(statistics):
+    return round(statistics[1]*100 - (statistics[1]*statistics[0]))
+
 
 
 def show_score(statistics):
