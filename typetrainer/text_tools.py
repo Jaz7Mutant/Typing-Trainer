@@ -16,6 +16,12 @@ class StringBuilder(list):
     # TODO Заменить на __str__, добавить __len__, __add__
 
 
+INACTIVE_KEYS = [b'\r']
+EXIT_KEY = b'\x1b'
+ANSWER_YES = [b'\xad', b'\x8d', b'y', b'Y']
+ANSWER_NO = [b'\xe2', b'\x92', b'n', b'N']
+
+
 def highlight_word(word: str):
     return '\x1b[4;35m' + word + '\x1b[0m'
 

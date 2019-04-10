@@ -1,9 +1,9 @@
 import os
-from typetrainer import settings
 from msvcrt import getch
 from typetrainer import game
 from typetrainer import server
 from typetrainer import SocketClient
+import configparser
 
 
 def get_user_name(change_name: bool):
@@ -23,13 +23,20 @@ def get_user_name(change_name: bool):
         return name
 
 
+def get_settings():
+    config = configparser.ConfigParser()
+    config.read(r'typetrainer\settings.ini')
+    return config
+
+
 def main_menu():
+    user_name = ''
+    config = get_settings()
     while True:
-        user_name = ''
         if user_name == '':
             user_name = get_user_name(False)
-        # os.system('cls')
-        print('\tTypeTrainer ' + settings.VERSION)
+        os.system('cls')
+        print('\tTypeTrainer ' + config['GENERAL']['VERSION'])
         print('\tWelcome, ' + user_name + '!')
         print('Menu:')
         print('\t1. Start game')

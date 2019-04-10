@@ -3,16 +3,20 @@ import time
 from msvcrt import getch
 import os
 from typetrainer import texts_generator
-from typetrainer import settings
-from typetrainer import SocketClient
+from typetrainer import menu
+
+
+config = menu.get_settings()
 
 
 def start_game(game_type: str, online: bool):
     texts = []
     if game_type == 'random_texts':
-        texts = texts_generator.get_random_texts(settings.TEXTS_DICTIONARY)
+        texts = texts_generator.get_random_texts(
+            config['DICTIONARIES']['TEXTS_DICTIONARY'])
     if game_type == 'random_words':
-        texts = texts_generator.get_random_words(settings.TEXTS_DICTIONARY)
+        texts = texts_generator.get_random_words(
+            config['DICTIONARIES']['TEXTS_DICTIONARY'])
     if game_type == 'python':
         print('Coming soon...')
         return
@@ -40,16 +44,15 @@ def ask_for_continue():
     print('More? (Y\\N)')
     while True:
         key_pressed = getch()
-        if key_pressed == settings.EXIT_KEY \
-                or key_pressed in settings.ANSWER_NO:
+        if key_pressed == text_tools.EXIT_KEY \
+                or key_pressed in text_tools.ANSWER_NO:
             return False
-        if key_pressed in settings.ANSWER_YES:
+        if key_pressed in text_tools.ANSWER_YES:
             return True
 
 
 def return_score(statistics):
     return round(statistics[1]*100 - (statistics[1]*statistics[0]))
-
 
 
 def show_score(statistics):
@@ -86,9 +89,9 @@ def match_user_input(expected: str, heading: str):
     print(heading)
     while True:
         raw_input = getch()
-        if raw_input in settings.INACTIVE_KEYS:
+        if raw_input in text_tools.INACTIVE_KEYS:
             continue
-        if raw_input == settings.EXIT_KEY:
+        if raw_input == text_tools.EXIT_KEY:
             return
 
         start_line = '\r'
@@ -98,7 +101,7 @@ def match_user_input(expected: str, heading: str):
                 current_index -= 1
             start_line = '\r\033[K'
         else:
-            symbol = raw_input.decode(settings.INPUT_ENCODING)
+            symbol = raw_input.decode(config['GENERAL']['INPUT_ENCODING'])
             if current_index >= len(expected) \
                     or symbol != expected[current_index]:
                 mistakes += 1
