@@ -51,7 +51,7 @@ def main_menu():
                 game_types_menu()
                 break
             if key_pressed == b'2':
-                get_user_name(True)
+                user_name = get_user_name(True)
                 break
             if key_pressed == b'3':
                 show_help()
@@ -144,4 +144,3 @@ def exit_game():
     print('Bye!')
     SocketClient.sio.disconnect()
     exit(0)
-

@@ -1,13 +1,17 @@
 import os
 import sys
 import colorama
+import configparser
 
 
+config = configparser.ConfigParser()
+config.read(r'typetrainer\settings.ini')
 try:
-    from typetrainer import game, settings, texts_generator, menu
+    from typetrainer import game, server, SocketClient, text_tools, \
+        texts_generator, menu
 except Exception as e:
     print('Game modules not found: "{}"'.format(e), file=sys.stderr)
-    exit(settings.ERROR_MISSING_MODULE)
+    exit(config['ERR_CODES']['ERROR_MISSING_MODULE'])
 
 
 def main():
