@@ -7,7 +7,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read(r'typetrainer\settings.ini')
 try:
-    from typetrainer import game, server, SocketClient2, text_tools, \
+    from typetrainer import game, multiplayer_menu, socket_client, text_tools, \
         texts_generator, menu
 except Exception as e:
     print('Game modules not found: "{}"'.format(e), file=sys.stderr)
@@ -15,6 +15,7 @@ except Exception as e:
 
 
 def main():
+    # TODO -h --help
     colorama.init()
     menu.main_menu()
     os.system('pause')

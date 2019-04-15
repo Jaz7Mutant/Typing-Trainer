@@ -3,7 +3,6 @@ import random
 
 
 def get_random_texts(filename: str, text_number: int):
-    # TODO Подгрузка текстов из сети
     try:
         with open(filename, encoding=settings.FILE_ENCODING) as file:
             data = file.read()
@@ -17,7 +16,6 @@ def get_random_texts(filename: str, text_number: int):
 
 
 def get_random_words(filename: str):
-    # TODO Подгрузка из сети
     try:
         with open(filename, encoding=settings.FILE_ENCODING) as file:
             data = file.read()

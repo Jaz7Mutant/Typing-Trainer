@@ -1,0 +1,97 @@
+def _cmd_about(self):
+print(self._config.string('about').format(
+__version__, '{} <{}>'.format(__author__, __email__)))
+
+def _cmd_help(self, command=None):
+if command is None:
+print(self._config.string('commands'))
+print('\n'.join(sorted(self._infos.keys())))
+return
+
+if command not in self._infos:
+return
+_, info = self._infos[command]
+req_count = len(info.args) - len(info.defaults or ())
+
+arg_fmt = lambda s: info.annotations.get(s, s)
+help_str = [command]
+help_str.extend(arg_fmt(info.args[i]) for i in range(1, req_count))
+help_str.extend('[{}]'.format(arg_fmt(info.args[i]))
+for i in range(req_count, len(info.args)))
+print(' '.join(help_str))
+
+def _cmd_lang(self, language=None):
+if language is None:
+language = self._config.language
+print('{} ({})'.format(language, self._config.langs[language]))
+else:
+self._config.language = language
+
+def _cmd_langs(self):
+print(self._config.string('langs'))
+for (name, descr) in self._config.langs.items():
+print('{} ({})'.format(name, descr))
+def _cmd_new(self, width=None, height=None, bombs=None):
+self._check_saved()
+
+size = self._driver.size() or (None, None)
+width = width or size[0]
+height = height or size[1]
+bombs = bombs or self._driver.bombs()
+
+try:
+self._driver.new_game((width, height), bombs)
+except Exception:
+print(self._config.string('start_game_error'), file=sys.stderr)
+
+def _cmd_load(self, filename=None):
+self._check_saved()
+if filename is None:
+filename = input(self._config.string('prompt_filename') + ' ')
+
+if not filename:
+print(self._config.string('open_cancel'))
+return
+filename = norm_path(filename, self._config.savedir)
+self._driver.load_game(filename)
+
+def _cmd_exit(self):
+self._check_saved()
+raise ExitGame
+
+
+class GameCommands(GeneralCommands):
+def __init__(self, config, game_driver, scoreboard):
+super().__init__(config, game_driver)
+self._scores = scoreboard
+
+def _cmd_show(self):
+print_field(self._driver)
+
+def _cmd_open(self, x, y):
+self._driver.open_cell((x, y))
+def _cmd_flag(self, x, y):
+self._driver.invert_flag((x, y))
+
+def _cmd_scores(self):
+if self._scores is None:
+return
+
+table = list(self._scores.get_scores(self._driver.size(),
+self._driver.bombs()))
+idx_width = len(str(len(table)))
+max_width = max(len(str(value)) for (_, value) in table)
+for (idx, (name, value)) in enumerate(table):
+print('{1:>{0}}  {3:>{2}}  {4}'.format(
+idx_width, idx + 1, max_width, value, name))
+
+def run(args, config, scoreboard, game_driver):
+@game_driver.event_handler(driver.EventTypes.PLAYER_WIN)
+def win_handler(field):
+print(config.string('win'))
+if scoreboard is None:
+return
+
+player_name = input(config.string('prompt_name') + ' ')
+if player_name:
+scoreboard.add_score(field, player_name, game_driver.get_time())
