@@ -9,11 +9,11 @@ from typetrainer import menu
 config = menu.get_settings()
 
 
-def start_game(game_type: str, online: bool):
+def start_game(game_type: str, online: bool, text_number=-1):
     texts = []
-    if game_type == 'random_texts':
+    if game_type == 'common_texts':
         texts = texts_generator.get_random_texts(
-            config['DICTIONARIES']['TEXTS_DICTIONARY'])
+            config['DICTIONARIES']['TEXTS_DICTIONARY'], text_number)
     if game_type == 'random_words':
         texts = texts_generator.get_random_words(
             config['DICTIONARIES']['TEXTS_DICTIONARY'])
@@ -25,7 +25,8 @@ def start_game(game_type: str, online: bool):
         print('Coming soon...')
         return
         # TODO
-
+    if text_number != -1:
+        texts = [texts[text_number], '']
     for text in texts:
         statistics = run_round(text)
         os.system('cls')
@@ -75,7 +76,7 @@ def run_round(raw_text: str):
                     word + ' ',
                     text_tools.highlight_word_in_line(line, index))
             except TypeError:
-                    return
+                return
             index += 1
     end_time = time.time()
     speed = len(raw_text) / (end_time - start_time) * 60

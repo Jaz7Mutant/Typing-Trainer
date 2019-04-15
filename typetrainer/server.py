@@ -1,12 +1,11 @@
 from msvcrt import getch
 import os
-from typetrainer import SocketClient
+from typetrainer import SocketClient2
 from typetrainer import menu
 from typetrainer import game
 import time
 
 
-GAME_MODE = 'random_texts'
 GAME_START = False
 
 
@@ -15,44 +14,74 @@ def create_room():
     room_name = input('Input room name: ')
     max_players = input('Set max players count: ')
     password = input('Set password: ')
-    SocketClient.room_create(room_name, password, menu.get_user_name(False), max_players)
+    os.system('cls')
+    print('Choose game type:')
+    print('1. Common texts')
+    print('2. Python')
+
+    while True:
+        key_pressed = getch()
+        if key_pressed == b'1':
+            game_type = 'common_texts'
+            break
+        if key_pressed == b'2':
+            game_type = 'python'
+            break
+    os.system('cls')
+    print('Choose text:')
+    print('1. First')
+    print('2. Second')
+    print('3. Third')
+    while True:
+        key_pressed = getch()
+        if key_pressed == b'1':
+            text_number = 1
+            break
+        if key_pressed == b'2':
+            text_number = 2
+            break
+        if key_pressed == b'3':
+            text_number = 3
+            break
+
+    SocketClient2.room_create(room_name, password, menu.get_user_name(False),
+                              int(max_players), game_type, text_number)
+    time.sleep(0.5)
     lobby(True)
 
 
 def lobby(leader: bool):
-    print('\t' + 'Room: ' + SocketClient.current_room)
-    print('\tGame mode: ' + GAME_MODE)
-    print('\n1. Players')
-    if leader:
-        print('2. Change game mode')
-        print('3. Start game')
-    else:
-        print('4. Ready')
-    print('\n5. Leave room')
     while True:
-        key_pressed = getch()
+        os.system('cls')
+        print('\tRoom: ' + SocketClient2.current_room_name)
+        print('\tGame mode: ' + SocketClient2.current_game_type)
+        print('\tText number: ' + str(SocketClient2.current_text_number))
+        print('\n1. Players')
+        if leader:
+            print('2. Start game')
+        else:
+            print('3. Ready')
+        print('\n4. Leave room')
+        while True:
+            key_pressed = getch()
 
-        if key_pressed == b'1':
-            show_players_list()
-            continue
-        if leader and key_pressed == b'2':
-            change_game_mode()
-            continue
-        if leader and key_pressed == b'3':
-            SocketClient.room_start(SocketClient.current_room)
-            waiting_for_start()
-            break
-        if not leader and key_pressed == b'4':
-            waiting_for_start()
-            break
-        if key_pressed == b'5':
-            SocketClient.sio.disconnect()
-            return
+            if key_pressed == b'1':
+                show_players_list()
+                break
+            if leader and key_pressed == b'2':
+                SocketClient2.room_start(SocketClient2.current_room)
+                waiting_for_start()
+                return
+            if not leader and key_pressed == b'3':
+                waiting_for_start()
+                return
+            if key_pressed == b'4':
+                SocketClient2.sio.disconnect()
+                return
 
 
 def waiting_for_start():
     os.system('cls')
-    print('Waiting for other players...')
     while True:
         if GAME_START:
             os.system('cls')
@@ -62,55 +91,39 @@ def waiting_for_start():
             time.sleep(1)
             print('Go!')
             time.sleep(1)
-            score = game.start_game(GAME_MODE, True)
-            SocketClient.room_score(score)
+            score = game.start_game(
+                SocketClient2.current_game_type,
+                True,
+                text_number=SocketClient2.current_text_number)
+            if score is None:
+                score = 0
+            SocketClient2.room_score(score)
             time.sleep(1)
             os.system('pause')
             return
+        else:
+            print('Waiting for other players... |', end='\r')
+            time.sleep(0.25)
+            print('Waiting for other players... /', end='\r')
+            time.sleep(0.25)
+            print('Waiting for other players... -', end='\r')
+            time.sleep(0.25)
+            print('Waiting for other players... \\', end='\r')
+            time.sleep(0.25)
+    # todo try 10 times then disconnect
 
 
 def show_players_list():
-    pass
-
-
-def change_game_mode():
     os.system('cls')
-    print('Choose game mode:')
-    print('\t1. Random texts')
-    print('\t2. Random words')
-    print('\t3. Python code')
-    print('\t4. Crazy')
-    print('\t5. Return to lobby')
-
-    while True:
-        key_pressed = getch()
-
-        if key_pressed == b'1':
-            GAME_MODE = 'random_texts'
-            break
-        if key_pressed == b'2':
-            GAME_MODE ='random_words'
-            break
-        if key_pressed == b'3':
-            GAME_MODE = 'python'
-            break
-        if key_pressed == b'4':
-            GAME_MODE = 'crazy'
-            break
-        if key_pressed == b'5':
-            return
-    pass
+    SocketClient2.room_players()
+    getch()
 
 
 def browse_rooms():
-    SocketClient.room_list()
+    # TODO Correct passwords
+    SocketClient2.room_list()
     time.sleep(1)
     room_number = input('Choose room to connect: ')
     password = input('Password: ')
-    try:
-        SocketClient.room_join(int(room_number), password, menu.get_user_name(False))
-    except Exception:
-        return
-    print(SocketClient.current_room)
-    lobby(False)
-
+    SocketClient2.room_join(int(room_number), password,
+                            menu.get_user_name(False))

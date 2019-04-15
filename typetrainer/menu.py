@@ -2,7 +2,7 @@ import os
 from msvcrt import getch
 from typetrainer import game
 from typetrainer import server
-from typetrainer import SocketClient
+from typetrainer import SocketClient2
 import configparser
 
 
@@ -76,6 +76,8 @@ def game_types_menu():
             single_player_modes()
             break
         if key_pressed == b'2':
+            os.system('cls')
+            SocketClient2.load_multiplayer()
             multi_players_menu()
             break
         if key_pressed == b'3':
@@ -86,17 +88,16 @@ def single_player_modes():
     os.system('cls')
     print('\tSingle player\n')
     print('Choose game mode:')
-    print('\t1. Random texts')
+    print('\t1. Common texts')
     print('\t2. Random words')
     print('\t3. Python code')
-    print('\t4. Crazy')
-    print('\t5. Return to main menu')
+    print('\t4. Return to main menu')
 
     while True:
         key_pressed = getch()
 
         if key_pressed == b'1':
-            game.start_game('random_texts', False)
+            game.start_game('common_texts', False)
             break
         if key_pressed == b'2':
             game.start_game('random_words', False)
@@ -105,9 +106,6 @@ def single_player_modes():
             game.start_game('python', False)
             break
         if key_pressed == b'4':
-            game.start_game('crazy', False)
-            break
-        if key_pressed == b'5':
             return
 
 
@@ -142,5 +140,5 @@ def show_about():
 
 def exit_game():
     print('Bye!')
-    SocketClient.sio.disconnect()
+    SocketClient2.sio.disconnect()
     exit(0)

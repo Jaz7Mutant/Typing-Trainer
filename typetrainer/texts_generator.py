@@ -2,13 +2,14 @@ from typetrainer import settings
 import random
 
 
-def get_random_texts(filename: str):
+def get_random_texts(filename: str, text_number: int):
     # TODO Подгрузка текстов из сети
     try:
         with open(filename, encoding=settings.FILE_ENCODING) as file:
             data = file.read()
             texts = data.split('\n\n')
-            random.shuffle(texts)
+            if text_number == -1:
+                random.shuffle(texts)
             return texts
     except FileNotFoundError:
         print('Dictionary not found')
