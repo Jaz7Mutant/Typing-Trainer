@@ -1,8 +1,8 @@
 import os
 from msvcrt import getch
 from typetrainer import game
-from typetrainer import server
-from typetrainer import SocketClient2
+from typetrainer import multiplayer_menu
+from typetrainer import socket_client
 import configparser
 
 
@@ -77,7 +77,7 @@ def game_types_menu():
             break
         if key_pressed == b'2':
             os.system('cls')
-            SocketClient2.load_multiplayer()
+            socket_client.load_multiplayer()
             multi_players_menu()
             break
         if key_pressed == b'3':
@@ -119,10 +119,10 @@ def multi_players_menu():
         key_pressed = getch()
 
         if key_pressed == b'1':
-            server.create_room()
+            multiplayer_menu.create_room()
             break
         if key_pressed == b'2':
-            server.browse_rooms()
+            multiplayer_menu.browse_rooms()
             break
         if key_pressed == b'3':
             return
@@ -135,10 +135,11 @@ def show_help():
 
 def show_about():
     # TODO ABOUT из файла
-    pass
+    print('JazzMutant 2019')
+    getch()
 
 
 def exit_game():
     print('Bye!')
-    SocketClient2.sio.disconnect()
+    socket_client.sio.disconnect()
     exit(0)

@@ -16,15 +16,10 @@ def start_game(game_type: str, online: bool, text_number=-1):
             config['DICTIONARIES']['TEXTS_DICTIONARY'], text_number)
     if game_type == 'random_words':
         texts = texts_generator.get_random_words(
-            config['DICTIONARIES']['TEXTS_DICTIONARY'])
+            config['DICTIONARIES']['WORDS_DICTIONARY'])
     if game_type == 'python':
-        print('Coming soon...')
-        return
-        # TODO
-    if game_type == 'crazy':
-        print('Coming soon...')
-        return
-        # TODO
+        texts = texts_generator.get_random_texts(
+            config['DICTIONARIES']['PYTHON_DICTIONARY'], text_number)
     if text_number != -1:
         texts = [texts[text_number], '']
     for text in texts:
