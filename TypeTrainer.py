@@ -7,7 +7,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read(r'typetrainer\settings.ini')
 try:
-    from typetrainer import game, server, SocketClient, text_tools, \
+    from typetrainer import game, server, SocketClient2, text_tools, \
         texts_generator, menu
 except Exception as e:
     print('Game modules not found: "{}"'.format(e), file=sys.stderr)
