@@ -1,10 +1,13 @@
-from typetrainer import settings
 import random
+from typetrainer import menu
+
+config = menu.get_settings()
 
 
 def get_random_texts(filename: str, text_number: int):
     try:
-        with open(filename, encoding=settings.FILE_ENCODING) as file:
+        with open(filename,
+                  encoding=config['GENERAL']['FILE_ENCODING']) as file:
             data = file.read()
             texts = data.split('\n\n')
             if text_number == -1:
@@ -12,12 +15,13 @@ def get_random_texts(filename: str, text_number: int):
             return texts
     except FileNotFoundError:
         print('Dictionary not found')
-        exit(settings.ERROR_MISSING_FILE)
+        exit(config['ERR_CODES']['ERROR_MISSING_FILE'])
 
 
 def get_random_words(filename: str):
     try:
-        with open(filename, encoding=settings.FILE_ENCODING) as file:
+        with open(filename,
+                  encoding=config['GENERAL']['FILE_ENCODING']) as file:
             data = file.read()
             texts = data.split('\n\n')
             result = []
@@ -33,4 +37,4 @@ def get_random_words(filename: str):
             return result
     except FileNotFoundError:
         print('Dictionary not found')
-        exit(settings.ERROR_MISSING_FILE)
+        exit(config['ERR_CODES']['ERROR_MISSING_FILE'])
