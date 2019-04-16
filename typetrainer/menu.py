@@ -7,10 +7,10 @@ import configparser
 
 
 def get_user_name(change_name: bool):
-    if not os.path.exists(r'typetrainer\user_data.txt'):
-        open(r'typetrainer\user_data.txt', 'w').close()
+    if not os.path.exists(r'typetrainer\user_data'):
+        open(r'typetrainer\user_data', 'w').close()
     os.system('cls')
-    with open(r'typetrainer\user_data.txt', 'r+', encoding='utf-8') as data:
+    with open(r'typetrainer\user_data', 'r+', encoding='utf-8') as data:
         user = data.read().split('\n')
         if not change_name and os.getlogin() == user[0] and user[1]:
             return user[1]

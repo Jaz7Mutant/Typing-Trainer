@@ -20,6 +20,8 @@ LOADED = False
 
 
 def load_multiplayer():
+    if LOADED:
+        return
     first_thread = threading.Thread(target=show_loading)
     second_thread = threading.Thread(target=connect_to_server)
     first_thread.start(), second_thread.start()
