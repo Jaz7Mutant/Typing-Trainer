@@ -8,12 +8,12 @@ from typetrainer import menu
 
 sio = socketio.Client()
 Rooms = []
-current_room = ""
-user_score = 0
-scoreboard = []
-current_room_name = ''
-current_game_type = ''
-current_text_number = 1
+current_room_TOKEN = ''
+USER_SCORE = 0
+SCOREBOARD = []
+CURRENT_ROOM_NAME = ''
+CURRENT_GAME_TYPE = ''
+CURRENT_TEXT_NUMBER = 1
 
 
 LOADED = False
@@ -59,14 +59,14 @@ def room_created(data):
         data['name']: str = Название комнаты
     """
     if not data['err']:
-        global current_room
-        current_room = data['token']
-        global current_room_name
-        current_room_name = data['name']
-        global current_game_type
-        current_game_type = data['gametype']
-        global current_text_number
-        current_text_number = data['textnumber']
+        global current_room_TOKEN
+        current_room_TOKEN = data['token']
+        global CURRENT_ROOM_NAME
+        CURRENT_ROOM_NAME = data['name']
+        global CURRENT_GAME_TYPE
+        CURRENT_GAME_TYPE = data['gametype']
+        global CURRENT_TEXT_NUMBER
+        CURRENT_TEXT_NUMBER = data['textnumber']
     elif data['err'] == 400:
         print("Wrong data")
 
@@ -90,9 +90,10 @@ def get_rooms(data):
     counter = 1
     for room in Rooms:
         print('%s. %-10s %-8s' % (counter, room['name'], room['players']))
+        # TODO check
         counter += 1
     if counter > 1:
-        room_number = input('Choose room to connect: ')
+        room_number = input('Choose a room to connect: ')
         try:
             int(room_number)
         except ValueError:
@@ -100,11 +101,12 @@ def get_rooms(data):
         if int(room_number) >= counter:
             print('Incorrect room')
             time.sleep(0.5)
-            multiplayer_menu.WAITING_FOR_RESPONSE = False
+            # multiplayer_menu.WAITING_FOR_RESPONSE = False
+            # TODO Check multiplayer
             return
         password = input('Password: ')
         room_join(int(room_number) - 1, password, menu.get_user_name(False))
-    multiplayer_menu.WAITING_FOR_RESPONSE = False
+    # multiplayer_menu.WAITING_FOR_RESPONSE = False
 
 
 @sio.on("joined")
@@ -124,14 +126,14 @@ def joined(data):
         data['textnumber']: int = Номер текста
     """
     if not data['err']:
-        global current_room
-        current_room = data['token']
-        global current_room_name
-        current_room_name = data['roomname']
-        global current_game_type
-        current_game_type = data['gametype']
-        global current_text_number
-        current_text_number = data['textnumber']
+        global current_room_TOKEN
+        current_room_TOKEN = data['token']
+        global CURRENT_ROOM_NAME
+        CURRENT_ROOM_NAME = data['roomname']
+        global CURRENT_GAME_TYPE
+        CURRENT_GAME_TYPE = data['gametype']
+        global CURRENT_TEXT_NUMBER
+        CURRENT_TEXT_NUMBER = data['textnumber']
         multiplayer_menu.GAME_FINISH = False
         multiplayer_menu.CONNECTION = True
     elif data['err'] == 400:
@@ -155,7 +157,7 @@ def started(data):
         data['room']: str = id запущенной комнаты (Приходит всем пользователям)
     """
     if not data['err']:
-        if data['room'] == current_room:
+        if data['room'] == current_room_TOKEN:
             # print("Start")
             multiplayer_menu.GAME_START = True
     elif data['err'] == 406:
@@ -180,32 +182,33 @@ def end_game(data):
         data['room']: str = id комнаты
 
         {НЕ ОТСОРТИРОВАНО}
-        data['scoreboard']: array =
-            data['scoreboard'][i] =
+        data['SCOREBOARD']: array =
+            data['SCOREBOARD'][i] =
                 name: str = Имя игрока
                 score: int = Счет игрока
                 token: str = id игрока
     """
     if not data['err']:
-        if data['room'] == current_room:
-            global scoreboard
-            scoreboard = data['clients']
+        if data['room'] == current_room_TOKEN:
+            global SCOREBOARD
+            SCOREBOARD = data['clients']
             sio.disconnect()
-            scoreboard = sorted(scoreboard, key=lambda info: info['score'],
+            SCOREBOARD = sorted(SCOREBOARD, key=lambda info: info['score'],
                                 reverse=True)
             counter = 1
             multiplayer_menu.GAME_FINISH = True
             multiplayer_menu.CONNECTION = False
             multiplayer_menu.GAME_START = False
             os.system('cls')
-            print('   Name       Score')
-            for player in scoreboard:
+            print('   %-16s %-8s' % ('Name', 'Score'))
+            for player in SCOREBOARD:
                 if counter == 1:
-                    print('%s. %-10s %-8s WINNER' % (counter,
+                    print('%s. %-16s %-8s WINNER' % (counter,
                                                      player['username'],
                                                      player['score']))
                 else:
                     print(f'{counter}. {player["username"]} {player["score"]}')
+                    # TODO Check and remove f-strings
                 counter += 1
     elif data['err'] == 401:
         print("You need to join")
@@ -226,9 +229,12 @@ def get_players(data):
         counter = 0
         for player in data['players']:
             if counter == 0:
-                print(str(counter) + '. ' + player + ' L')
+                print('%s. %-16s L' % (counter, player))
+                # print(str(counter) + '. ' + player + ' L')
             else:
-                print(str(counter) + '. ' + player)
+                print('%s. %-16s' % player)
+                # print(str(counter) + '. ' + player)
+                # TODO Check
             counter += 1
     elif data['err'] == 401:
         print("You need to join")
@@ -261,6 +267,7 @@ def room_list():
         Ответ приходит в get_rooms()
     """
     sio.emit("rooms")
+    multiplayer_menu.WAITING_FOR_RESPONSE = False
 
 
 def room_join(index: int, password: str, username: str):
@@ -293,7 +300,7 @@ def room_score(points: int):
     :return:
         Ответ приходит в end_game()
     """
-    sio.emit("score", {'token': current_room, 'score': points})
+    sio.emit("score", {'token': current_room_TOKEN, 'score': points})
 
 
 def room_players():
@@ -302,4 +309,4 @@ def room_players():
     :return:
         Ответ приходит в get_players()
     """
-    sio.emit("players", {"token": current_room})
+    sio.emit("players", {"token": current_room_TOKEN})

@@ -1,19 +1,19 @@
 class StringBuilder(list):
-
     def __init__(self):
         super().__init__()
-        self.word = []
-    # TODO сделать _word
+        self._word = []
 
-    def add(self, word: str):
-        self.word.append(word)
+    def __str__(self):
+        return ''.join(self._word)
+
+    def __len__(self):
+        return len(self._word)
+
+    def __add__(self, other):
+        self._word.append(other)
 
     def remove_last(self):
-        self.word.pop()
-
-    def to_string(self):
-        return ''.join(self.word)
-    # TODO Заменить на __str__, добавить __len__, __add__
+        self._word.pop()
 
 
 INACTIVE_KEYS = [b'\r']
