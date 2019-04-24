@@ -1,4 +1,4 @@
-from msvcrt import getch
+import msvcrt
 import os
 from typetrainer import socket_client
 from typetrainer import menu
@@ -22,6 +22,7 @@ def create_room():
         int(max_players)
     except ValueError:
         return
+    # TODO print user is down
     password = input('Set password: ')
     os.system('cls')
     print('Choose game type:')
@@ -29,7 +30,7 @@ def create_room():
     print('2. Python code')
 
     while True:
-        key_pressed = getch()
+        key_pressed = msvcrt.getch()
         if key_pressed == b'1':
             game_type = 'common_texts'
             break
@@ -37,12 +38,12 @@ def create_room():
             game_type = 'python'
             break
     os.system('cls')
-    print('Choose text:')
+    print('Choose text type:')
     print('1. Easy')
     print('2. Medium')
     print('3. Hard')
     while True:
-        key_pressed = getch()
+        key_pressed = msvcrt.getch()
         if key_pressed == b'1':
             text_number = 1
             break
@@ -62,9 +63,9 @@ def create_room():
 def lobby(leader: bool):
     while True:
         os.system('cls')
-        print('\tRoom: ' + socket_client.current_room_name)
-        print('\tGame mode: ' + socket_client.current_game_type)
-        print('\tText number: ' + str(socket_client.current_text_number))
+        print('\tRoom: ' + socket_client.CURRENT_ROOM_NAME)
+        print('\tGame mode: ' + socket_client.CURRENT_GAME_TYPE)
+        print('\tText complexity: ' + str(socket_client.CURRENT_TEXT_NUMBER))
         print('\n1. Players')
         if leader:
             print('2. Start game')
@@ -72,13 +73,13 @@ def lobby(leader: bool):
             print('3. Ready')
         print('\n4. Leave room')
         while True:
-            key_pressed = getch()
+            key_pressed = msvcrt.getch()
 
             if key_pressed == b'1':
                 show_players_list()
                 break
             if leader and key_pressed == b'2':
-                socket_client.room_start(socket_client.current_room)
+                socket_client.room_start(socket_client.current_room_TOKEN)
                 waiting_for_start()
                 return
             if not leader and key_pressed == b'3':
@@ -93,6 +94,9 @@ def waiting_for_start():
     os.system('cls')
     while True:
         if GAME_START:
+            new_game = game.Game(socket_client.CURRENT_GAME_TYPE,
+                                 True,
+                                 text_number=socket_client.CURRENT_TEXT_NUMBER)
             os.system('cls')
             print('Ready')
             time.sleep(1)
@@ -100,20 +104,25 @@ def waiting_for_start():
             time.sleep(1)
             print('Go!')
             time.sleep(1)
-            score = game.start_game(
-                socket_client.current_game_type,
-                True,
-                text_number=socket_client.current_text_number)
+            score = new_game.start_game()
+            # score = game.start_game(
+            #     socket_client.CURRENT_GAME_TYPE,
+            #     True,
+            #     text_number=socket_client.CURRENT_TEXT_NUMBER)
             if score is None:
                 score = 0
             socket_client.room_score(score)
             print('Please, wait for other players')
             while not GAME_FINISH:
                 print('|', end='\r')
-                time.sleep(0.5)
+                time.sleep(0.3)
+                print('/', end='\r')
+                time.sleep(0.3)
                 print('-', end='\r')
-                time.sleep(0.5)
-            getch()
+                time.sleep(0.3)
+                print('\\', end='\r')
+                time.sleep(0.3)
+            msvcrt.getch()
             return
         else:
             print('Waiting for other players... |', end='\r')
@@ -130,7 +139,7 @@ def waiting_for_start():
 def show_players_list():
     os.system('cls')
     socket_client.room_players()
-    getch()
+    msvcrt.getch()
 
 
 def browse_rooms():
@@ -138,6 +147,7 @@ def browse_rooms():
     global WAITING_FOR_RESPONSE
     WAITING_FOR_RESPONSE = True
     socket_client.room_list()
+    time.sleep(1)
     while WAITING_FOR_RESPONSE:
         time.sleep(0.2)
     if CONNECTION:

@@ -1,5 +1,5 @@
 import os
-from msvcrt import getch
+import msvcrt
 from typetrainer import game
 from typetrainer import multiplayer_menu
 from typetrainer import socket_client
@@ -8,7 +8,7 @@ import configparser
 
 def get_user_name(change_name: bool):
     if not os.path.exists(r'typetrainer\user_data'):
-        open(r'typetrainer\user_data', 'w').close()
+        open(r'\typetrainer\user_data', 'w').close()
     os.system('cls')
     with open(r'typetrainer\user_data', 'r+', encoding='utf-8') as data:
         user = data.read().split('\n')
@@ -17,6 +17,7 @@ def get_user_name(change_name: bool):
         data.seek(0)
         data.truncate(0)
         data.write(os.getlogin() + '\n')
+        print(os.system('dir'))
         print('Please, input your name')
         name = input()
         data.write(name)
@@ -45,7 +46,7 @@ def main_menu():
         print('\t4. About')
         print('\t5. Exit')
         while True:
-            key_pressed = getch()
+            key_pressed = msvcrt.getch()
 
             if key_pressed == b'1':
                 game_types_menu()
@@ -70,7 +71,7 @@ def game_types_menu():
     print('\t2. Multi player')
     print('\t3. Return to main menu')
     while True:
-        key_pressed = getch()
+        key_pressed = msvcrt.getch()
 
         if key_pressed == b'1':
             single_player_modes()
@@ -92,18 +93,17 @@ def single_player_modes():
     print('\t2. Random words')
     print('\t3. Python code')
     print('\t4. Return to main menu')
-
     while True:
-        key_pressed = getch()
+        key_pressed = msvcrt.getch()
 
         if key_pressed == b'1':
-            game.start_game('common_texts', False)
+            game.Game('common_texts', False).start_game()
             break
         if key_pressed == b'2':
-            game.start_game('random_words', False)
+            game.Game('random_words', False).start_game()
             break
         if key_pressed == b'3':
-            game.start_game('python', False)
+            game.Game('python', False).start_game()
             break
         if key_pressed == b'4':
             return
@@ -116,7 +116,7 @@ def multi_players_menu():
     print('\t2. Connect to room')
     print('\t3. Return to main menu')
     while True:
-        key_pressed = getch()
+        key_pressed = msvcrt.getch()
 
         if key_pressed == b'1':
             multiplayer_menu.create_room()
@@ -134,9 +134,13 @@ def show_help():
 
 
 def show_about():
-    # TODO ABOUT из файла
-    print('JazzMutant 2019')
-    getch()
+    os.system('cls')
+    print('\tTyping trainer\n')
+    print('\tMade by:')
+    print('\tJazzMutant')
+    print('\td-a-ny4@ya.ru')
+    print('\t@JazzMutant')
+    input()
 
 
 def exit_game():

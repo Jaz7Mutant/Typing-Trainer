@@ -1,8 +1,6 @@
-import os
 import sys
 import colorama
 import configparser
-
 
 config = configparser.ConfigParser()
 config.read(r'typetrainer\settings.ini')
@@ -18,7 +16,6 @@ def main():
     # TODO -h --help
     colorama.init()
     menu.main_menu()
-    os.system('pause')
 
 
 if __name__ == '__main__':
