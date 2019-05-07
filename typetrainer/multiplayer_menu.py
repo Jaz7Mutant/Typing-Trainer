@@ -146,6 +146,5 @@ def browse_rooms():
     time.sleep(1)
     while WAITING_FOR_RESPONSE:
         time.sleep(0.2)
-        print('hui')
     if CONNECTION:
         lobby(False)
