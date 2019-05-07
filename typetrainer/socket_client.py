@@ -14,8 +14,7 @@ SCOREBOARD = []
 CURRENT_ROOM_NAME = ''
 CURRENT_GAME_TYPE = ''
 CURRENT_TEXT_NUMBER = 1
-
-
+ROOMS_SHOWED = False
 LOADED = False
 
 
@@ -90,24 +89,25 @@ def get_rooms(data):
     counter = 1
     for room in Rooms:
         print('%s. %-10s %-8s' % (counter, room['name'], room['players']))
-        # TODO check
         counter += 1
     if counter > 1:
         room_number = input('Choose a room to connect: ')
         try:
             int(room_number)
         except ValueError:
+            multiplayer_menu.WAITING_FOR_RESPONSE = False
             return
         if int(room_number) >= counter:
             print('Incorrect room')
             time.sleep(0.5)
             multiplayer_menu.WAITING_FOR_RESPONSE = False
-            # TODO Check multiplayer
             return
         password = input('Password: ')
         room_join(int(room_number) - 1, password, menu.get_user_name(False))
-        time.sleep(0.8)
+    time.sleep(0.8)
     multiplayer_menu.WAITING_FOR_RESPONSE = False
+    global ROOMS_SHOWED
+    ROOMS_SHOWED = True
 
 
 @sio.on("joined")
@@ -159,7 +159,6 @@ def started(data):
     """
     if not data['err']:
         if data['room'] == current_room_TOKEN:
-            # print("Start")
             multiplayer_menu.GAME_START = True
     elif data['err'] == 406:
         print("Room already started")
@@ -208,8 +207,9 @@ def end_game(data):
                                                      player['username'],
                                                      player['score']))
                 else:
-                    print(f'{counter}. {player["username"]} {player["score"]}')
-                    # TODO Check and remove f-strings
+                    print('%s. %-16s %-8s' % (counter,
+                                              player['username'],
+                                              player['score']))
                 counter += 1
     elif data['err'] == 401:
         print("You need to join")
@@ -230,17 +230,13 @@ def get_players(data):
         counter = 0
         for player in data['players']:
             if counter == 0:
-                # print('%s. %-16s L' % (counter, player))
-                 print(str(counter) + '. ' + player + ' L')
+                print(str(counter) + '. ' + player + ' L')
             else:
-                # print('%s. %-16s' % player)
-                 print(str(counter) + '. ' + player)
-                # TODO Check
+                print(str(counter) + '. ' + player)
             counter += 1
     elif data['err'] == 401:
         print("You need to join")
     print('Press any key to return')
-    # TODO formatted output
 
 
 def room_create(room_name: str, password: str, user_name: str,
@@ -267,9 +263,11 @@ def room_list():
     :return:
         Ответ приходит в get_rooms()
     """
+    global ROOMS_SHOWED
+    ROOMS_SHOWED = False
     sio.emit("rooms")
-    # time.sleep(1)
-    # multiplayer_menu.WAITING_FOR_RESPONSE = False
+    while not ROOMS_SHOWED:
+        time.sleep(0.3)
 
 
 def room_join(index: int, password: str, username: str):

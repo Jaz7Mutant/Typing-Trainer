@@ -56,7 +56,8 @@ def create_room():
 
     socket_client.room_create(room_name, password, menu.get_user_name(False),
                               int(max_players), game_type, text_number)
-    time.sleep(0.5)
+    while socket_client.current_room_TOKEN == '':
+        time.sleep(0.5)
     lobby(True)
 
 
@@ -145,5 +146,6 @@ def browse_rooms():
     time.sleep(1)
     while WAITING_FOR_RESPONSE:
         time.sleep(0.2)
+        print('hui')
     if CONNECTION:
         lobby(False)
