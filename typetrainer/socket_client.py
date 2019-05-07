@@ -101,12 +101,13 @@ def get_rooms(data):
         if int(room_number) >= counter:
             print('Incorrect room')
             time.sleep(0.5)
-            # multiplayer_menu.WAITING_FOR_RESPONSE = False
+            multiplayer_menu.WAITING_FOR_RESPONSE = False
             # TODO Check multiplayer
             return
         password = input('Password: ')
         room_join(int(room_number) - 1, password, menu.get_user_name(False))
-    # multiplayer_menu.WAITING_FOR_RESPONSE = False
+        time.sleep(0.8)
+    multiplayer_menu.WAITING_FOR_RESPONSE = False
 
 
 @sio.on("joined")
@@ -229,11 +230,11 @@ def get_players(data):
         counter = 0
         for player in data['players']:
             if counter == 0:
-                print('%s. %-16s L' % (counter, player))
-                # print(str(counter) + '. ' + player + ' L')
+                # print('%s. %-16s L' % (counter, player))
+                 print(str(counter) + '. ' + player + ' L')
             else:
-                print('%s. %-16s' % player)
-                # print(str(counter) + '. ' + player)
+                # print('%s. %-16s' % player)
+                 print(str(counter) + '. ' + player)
                 # TODO Check
             counter += 1
     elif data['err'] == 401:
@@ -267,7 +268,8 @@ def room_list():
         Ответ приходит в get_rooms()
     """
     sio.emit("rooms")
-    multiplayer_menu.WAITING_FOR_RESPONSE = False
+    # time.sleep(1)
+    # multiplayer_menu.WAITING_FOR_RESPONSE = False
 
 
 def room_join(index: int, password: str, username: str):
