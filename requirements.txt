@@ -1,0 +1,2 @@
+colorama==0.4.1
+websocket-client==0.56.0

@@ -16,6 +16,7 @@
 * Словари `dictionaries/`
 
 Справка: `python TypingTrainer.py --help`
+
 Запуск игры: `python TypingTrainer.py`
 
 ## Режимы игры
