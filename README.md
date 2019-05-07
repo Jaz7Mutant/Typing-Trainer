@@ -33,5 +33,7 @@
 Тексты формируются классом `TextGenerator` 
 
 Тесты пожно найти в папке `tests`
+
 `typetrainer\game.py                  95     18    81%`
+
 `typetrainer\texts_generator.py       34      6    82%`
