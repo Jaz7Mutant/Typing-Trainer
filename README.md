@@ -15,7 +15,8 @@
 * Тесты `tests/`
 * Словари `dictionaries/`
 
-Справка по запуску: `python TypingTrainer.py --help`
+Справка: `python TypingTrainer.py --help`
+Запуск игры: `python TypingTrainer.py`
 
 ## Режимы игры
 * Common texts

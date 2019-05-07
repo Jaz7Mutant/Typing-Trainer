@@ -13,7 +13,7 @@ except Exception as e:
 
 
 def main():
-    if sys.argv[1]:
+    if len(sys.argv) > 1:
         parse_args(sys.argv[1])
     colorama.init()
     menu.main_menu()
