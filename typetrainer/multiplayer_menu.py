@@ -105,10 +105,6 @@ def waiting_for_start():
             print('Go!')
             time.sleep(1)
             score = new_game.start_game()
-            # score = game.start_game(
-            #     socket_client.CURRENT_GAME_TYPE,
-            #     True,
-            #     text_number=socket_client.CURRENT_TEXT_NUMBER)
             if score is None:
                 score = 0
             socket_client.room_score(score)
@@ -133,7 +129,6 @@ def waiting_for_start():
             time.sleep(0.25)
             print('Waiting for other players... \\', end='\r')
             time.sleep(0.25)
-    # todo try 10 times then disconnect
 
 
 def show_players_list():
