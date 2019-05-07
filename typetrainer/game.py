@@ -93,7 +93,7 @@ class Game:
         print(heading)
         while True:
             raw_input = msvcrt.getch()
-            print(raw_input)
+
             if raw_input in text_tools.INACTIVE_KEYS:
                 continue
             if raw_input == text_tools.EXIT_KEY:

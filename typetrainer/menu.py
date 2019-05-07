@@ -17,7 +17,6 @@ def get_user_name(change_name: bool):
         data.seek(0)
         data.truncate(0)
         data.write(os.getlogin() + '\n')
-        print(os.system('dir'))
         print('Please, input your name')
         name = input()
         data.write(name)
@@ -129,8 +128,22 @@ def multi_players_menu():
 
 
 def show_help():
-    # TODO Здесь будет выводиться справка из файла
-    pass
+    os.system('cls')
+    print('\tTyping trainer\n')
+    print('\tThis game can improve your typing skills\n'
+          '\tand give you nice emotions in online mode\n\n'
+          '\tThere are two game types:\n'
+          '\t1. Single player\n'
+          '\t2. Multiplayer\n\n'
+          '\tTo start game you just need to input your name,\n'
+          '\tchoose game mode and type. In online modes you\n'
+          '\tcan create your own room or connect to other\n'
+          '\tplayers rooms.\n\n'
+          '\tIn single players mode you\'ll see your statistics\n'
+          '\tafter every round. You can\'t use special keys.\n'
+          '\tIt helps us to reduce noob-cheaters\n\n'
+          '\tFor your suggestions and feedback: d-a-ny4@ya.ru')
+    msvcrt.getch()
 
 
 def show_about():
@@ -140,7 +153,7 @@ def show_about():
     print('\tJazzMutant')
     print('\td-a-ny4@ya.ru')
     print('\t@JazzMutant')
-    input()
+    msvcrt.getch()
 
 
 def exit_game():

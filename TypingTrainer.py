@@ -13,9 +13,18 @@ except Exception as e:
 
 
 def main():
-    # TODO -h --help
+    if sys.argv[1]:
+        parse_args(sys.argv[1])
     colorama.init()
     menu.main_menu()
+
+
+def parse_args(arg: str):
+    if arg == '-h' or arg == '--help':
+        menu.show_help()
+        menu.exit_game()
+    else:
+        raise KeyError('Incorrect argument', arg)
 
 
 if __name__ == '__main__':
