@@ -45,6 +45,22 @@ def show_loading():
         time.sleep(0.25)
 
 
+def room_create(room_name: str, password: str, user_name: str,
+                max_clients: int, game_type: str, text_number: int):
+    """
+    Запрос на создание комнаты
+    :param room_name: Название комнаты
+    :param password: Пароль для входа
+    :param user_name: Имя создателя
+    :param max_clients: Максимум игроков в комнате
+    :param game_type: Тип игры
+    :param text_number: Номер текста
+    """
+    sio.emit("create", {'roomname': room_name, 'password': password,
+                        'username': user_name, 'maxclients': max_clients,
+                        "gametype": game_type, "textnumber": text_number})
+
+
 @sio.on("created")
 def room_created(data):
     """
@@ -68,6 +84,17 @@ def room_created(data):
         CURRENT_TEXT_NUMBER = data['textnumber']
     elif data['err'] == 400:
         print("Wrong data")
+
+
+def room_list():
+    """
+    Запрашивает список доступных комнат
+    """
+    global ROOMS_SHOWED
+    ROOMS_SHOWED = False
+    sio.emit("rooms")
+    while not ROOMS_SHOWED:
+        time.sleep(0.3)
 
 
 @sio.on("rooms")
@@ -110,6 +137,17 @@ def get_rooms(data):
     ROOMS_SHOWED = True
 
 
+def room_join(index: int, password: str, username: str):
+    """
+    Запрос на подключение к комнате
+    :param index: Номер комнаты в списке
+    :param password: Пароль для входа
+    :param username: Имя игрока в комнате
+    """
+    sio.emit("join", {'token': Rooms[index]['token'], 'password': password,
+                      'username': username})
+
+
 @sio.on("joined")
 def joined(data):
     """
@@ -145,6 +183,14 @@ def joined(data):
         print("Room is full")
 
 
+def room_start(current_user_room: str):
+    """
+    Запрос на начало игры в комнате
+    :param current_user_room: id запускаемой комнаты
+    """
+    sio.emit("start", {'token': current_user_room})
+
+
 @sio.on("start")
 def started(data):
     """
@@ -166,6 +212,14 @@ def started(data):
         print("You need to join")
 
 
+def room_score(points: int):
+    """
+    Отправляет игровой счет на сервер
+    :param points: Счет игрока
+    """
+    sio.emit("score", {'token': current_room_TOKEN, 'score': points})
+
+
 @sio.on("end")
 def end_game(data):
     """
@@ -181,7 +235,6 @@ def end_game(data):
 
         data['room']: str = id комнаты
 
-        {НЕ ОТСОРТИРОВАНО}
         data['SCOREBOARD']: array =
             data['SCOREBOARD'][i] =
                 name: str = Имя игрока
@@ -215,6 +268,13 @@ def end_game(data):
         print("You need to join")
 
 
+def room_players():
+    """
+    Запрашивает список игроков в вашей комнате
+    """
+    sio.emit("players", {"token": current_room_TOKEN})
+
+
 @sio.on("players")
 def get_players(data):
     """
@@ -237,76 +297,3 @@ def get_players(data):
     elif data['err'] == 401:
         print("You need to join")
     print('Press any key to return')
-
-
-def room_create(room_name: str, password: str, user_name: str,
-                max_clients: int, game_type: str, text_number: int):
-    """
-    Запрос на создание комнаты
-    :param room_name: Название комнаты
-    :param password: Пароль для входа
-    :param user_name: Имя создателя
-    :param max_clients: Максимум игроков в комнате
-    :param game_type: Тип игры
-    :param text_number: Номер текста
-    :return:
-        Ответ приходит в room_created()
-    """
-    sio.emit("create", {'roomname': room_name, 'password': password,
-                        'username': user_name, 'maxclients': max_clients,
-                        "gametype": game_type, "textnumber": text_number})
-
-
-def room_list():
-    """
-    Запрашивает список доступных комнат
-    :return:
-        Ответ приходит в get_rooms()
-    """
-    global ROOMS_SHOWED
-    ROOMS_SHOWED = False
-    sio.emit("rooms")
-    while not ROOMS_SHOWED:
-        time.sleep(0.3)
-
-
-def room_join(index: int, password: str, username: str):
-    """
-    Запрос на подключение к комнате
-    :param index: Номер комнаты в списке
-    :param password: Пароль для входа
-    :param username: Имя игрока в комнате
-    :return:
-        Ответ приходит в joined()
-    """
-    sio.emit("join", {'token': Rooms[index]['token'], 'password': password,
-                      'username': username})
-
-
-def room_start(current_user_room: str):
-    """
-    Запрос на начало игры в комнате
-    :param current_user_room: id запускаемой комнаты
-    :return:
-        Ответ приходит в started
-    """
-    sio.emit("start", {'token': current_user_room})
-
-
-def room_score(points: int):
-    """
-    Отправляет игровой счет на сервер
-    :param points: Счет игрока
-    :return:
-        Ответ приходит в end_game()
-    """
-    sio.emit("score", {'token': current_room_TOKEN, 'score': points})
-
-
-def room_players():
-    """
-    Запрашивает список игроков в вашей комнате
-    :return:
-        Ответ приходит в get_players()
-    """
-    sio.emit("players", {"token": current_room_TOKEN})

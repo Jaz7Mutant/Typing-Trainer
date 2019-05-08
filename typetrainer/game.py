@@ -69,10 +69,10 @@ class Game:
         start_time = time.time()
         chars_counter = 0
         for line in text:
-            chars_counter += len(line)
             words = line.split()
             index = 0
             for word in words:
+                chars_counter += len(word)
                 os.system('cls')
                 try:
                     mistakes += self.match_user_input(
@@ -83,7 +83,7 @@ class Game:
                 index += 1
         end_time = time.time()
         speed = len(raw_text) / (end_time - start_time + 0.001) * 60
-        accuracy = 100 - (mistakes / (chars_counter + 1))
+        accuracy = (1 - (mistakes / (chars_counter + 1))) * 100
         return mistakes, speed, accuracy
 
     def match_user_input(self, expected: str, heading: str):
