@@ -4,6 +4,13 @@ import msvcrt
 import os
 from typetrainer import texts_generator
 from typetrainer import menu
+from pygame import mixer
+
+mixer.pre_init(44100, -16, 1, 512)
+mixer.init()
+KEY_SOUND = mixer.Sound('typetrainer/key.wav')
+ERR_SOUND = mixer.Sound('typetrainer/err.wav')
+RESULT_SOUND = mixer.Sound('typetrainer/result.wav')
 
 
 def return_score(statistics):
@@ -55,6 +62,7 @@ class Game:
             os.system('cls')
             if not statistics:
                 return
+            mixer.Sound.play(RESULT_SOUND)
             if self.online:
                 return return_score(statistics)
             show_score(statistics)
@@ -93,6 +101,7 @@ class Game:
         print(heading)
         while True:
             raw_input = msvcrt.getch()
+            mixer.Sound.play(KEY_SOUND)
 
             if raw_input in text_tools.INACTIVE_KEYS:
                 continue
@@ -111,6 +120,7 @@ class Game:
                 if current_index >= len(expected) \
                         or symbol != expected[current_index]:
                     mistakes += 1
+                    mixer.Sound.play(ERR_SOUND)
                     user_input + text_tools.highlight_symbol(symbol)
                 else:
                     user_input + symbol
