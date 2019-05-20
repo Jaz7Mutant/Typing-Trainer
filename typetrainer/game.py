@@ -10,6 +10,7 @@ mixer.pre_init(44100, -16, 1, 512)
 mixer.init()
 KEY_SOUND = mixer.Sound('typetrainer/key.wav')
 ERR_SOUND = mixer.Sound('typetrainer/err.wav')
+RESULT_SOUND = mixer.Sound('typetrainer/result.wav')
 
 
 
@@ -62,7 +63,7 @@ class Game:
             os.system('cls')
             if not statistics:
                 return
-            mixer.Sound.play(mixer.Sound('typetrainer/result.wav'))
+            mixer.Sound.play(RESULT_SOUND)
             if self.online:
                 return return_score(statistics)
             show_score(statistics)
@@ -91,7 +92,7 @@ class Game:
                 index += 1
         end_time = time.time()
         speed = len(raw_text) / (end_time - start_time + 0.001) * 60
-        accuracy = 100 - (mistakes / (chars_counter + 1))
+        accuracy = 100 - (mistakes / (chars_counter + 1) * 100)
         return mistakes, speed, accuracy
 
     def match_user_input(self, expected: str, heading: str):
