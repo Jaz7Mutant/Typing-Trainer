@@ -4,6 +4,11 @@ from typetrainer import game
 from typetrainer import multiplayer_menu
 from typetrainer import socket_client
 import configparser
+from pygame import mixer
+import time
+
+mixer.pre_init(44100, -16, 1, 512)
+mixer.init()
 
 
 def get_user_name(change_name: bool):
@@ -143,6 +148,7 @@ def show_help():
           '\tafter every round. You can\'t use special keys.\n'
           '\tIt helps us to reduce noob-cheaters\n\n'
           '\tFor your suggestions and feedback: d-a-ny4@ya.ru')
+    mixer.Sound.play(mixer.Sound('typetrainer/help.wav'))
     msvcrt.getch()
 
 
@@ -153,10 +159,13 @@ def show_about():
     print('\tJazzMutant')
     print('\td-a-ny4@ya.ru')
     print('\t@JazzMutant')
+    mixer.Sound.play(mixer.Sound('typetrainer/about.wav'))
     msvcrt.getch()
 
 
 def exit_game():
     print('Bye!')
+    mixer.Sound.play(mixer.Sound('typetrainer/end.wav'))
+    time.sleep(7)
     socket_client.sio.disconnect()
     exit(0)
